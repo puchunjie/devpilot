@@ -1,0 +1,359 @@
+{
+  "name": "devHelper",
+  "displayName": "DevHelper",
+  "description": "Your AI-Infused Code Copilot",
+  "version": "1.7.3",
+  "publisher": "Zhongan",
+  "icon": "assets/logo.png",
+  "homepage": "https://devpilot.zhongan.com",
+  "keywords": [
+    "pilot",
+    "devpilot",
+    "自动编程",
+    "编码助手",
+    "ai",
+    "assistant",
+    "codegen",
+    "autocomplete",
+    "autocoding",
+    "inline completion",
+    "code generation",
+    "chatglm",
+    "java",
+    "python",
+    "go",
+    "javascript",
+    "c#",
+    "php",
+    "typescript",
+    "react"
+  ],
+  "repository": {
+    "url": "https://github.com/openpilot-hub/devpilot-vscode",
+    "type": "git"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "dev": "npm run watch:ext",
+    "watch": "npm-run-all --parallel watch:*",
+    "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",
+    "package": "npm run clean && npm-run-all --parallel package:*",
+    "package:ext": "webpack --mode production --config ./webpack/extension.config.js",
+    "package:h5": "cd ../devpilot-h5 && git pull && npm run build:vscode",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "clean": "rimraf dist",
+    "test": "node ./out/test/runTest.js",
+    "pack": "npx vsce package",
+    "publish": "npx vsce publish"
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "devpilot-sidebar",
+          "title": "DevHelper",
+          "icon": "assets/devhelper.svg"
+        }
+      ]
+    },
+    "views": {
+      "devpilot-sidebar": [
+        {
+          "type": "webview",
+          "id": "devpilot-welcome",
+          "name": "Welcome",
+          "when": "devpilot.login != 1"
+        },
+        {
+          "type": "webview",
+          "id": "devpilot-chat",
+          "name": "AI Chat",
+          "when": "devpilot.login == 1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "DevHelper",
+      "properties": {
+        "devpilot.language": {
+          "type": "string",
+          "description": "%devpilot.language.description%",
+          "enum": [
+            "Chinese",
+            "English"
+          ],
+          "enumItemLabels": [
+            "%devpilot.language.chinese%",
+            "%devpilot.language.english%"
+          ],
+          "default": "Chinese",
+          "order": 10
+        },
+        "devpilot.autoCompletion": {
+          "type": "boolean",
+          "description": "%devpilot.autoCompletion.description%",
+          "default": true,
+          "order": 20
+        },
+        "devpilot.methodShortcut": {
+          "type": "string",
+          "description": "%devpilot.methodShortcut.description%",
+          "enum": [
+            "hidden",
+            "inline",
+            "group"
+          ],
+          "enumItemLabels": [
+            "%devpilot.methodShortcut.hidden%",
+            "%devpilot.methodShortcut.inline%",
+            "%devpilot.methodShortcut.group%"
+          ],
+          "default": "inline",
+          "order": 30
+        },
+        "devpilot.networkChecking": {
+          "type": "boolean",
+          "description": "%devpilot.networkChecking.description%",
+          "default": true,
+          "order": 40
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "editor.action.inlineSuggest.trigger",
+        "key": "alt+\\",
+        "mac": "option+\\",
+        "when": "editorTextFocus&&!editorHasSelection&&!inlineSuggestionVisible"
+      }
+    ],
+    "commands": [
+      {
+        "command": "devpilot.openChat",
+        "category": "DevHelper",
+        "title": "%devpilot.openChat%"
+      },
+      {
+        "command": "devpilot.referenceCode",
+        "category": "DevHelper",
+        "title": "%devpilot.referenceCode%"
+      },
+      {
+        "command": "devpilot.explainCode",
+        "category": "DevHelper",
+        "title": "%devpilot.explainCode.title%"
+      },
+      {
+        "command": "devpilot.fixCode",
+        "category": "DevHelper",
+        "title": "%devpilot.fixCode.title%"
+      },
+      {
+        "command": "devpilot.commentCode",
+        "category": "DevHelper",
+        "title": "%devpilot.commentCode.title%"
+      },
+      {
+        "command": "devpilot.generateTest",
+        "category": "DevHelper",
+        "title": "%devpilot.generateTest.title%"
+      },
+      {
+        "command": "devpilot.checkPerformance",
+        "category": "DevHelper",
+        "title": "%devpilot.checkPerformance.title%"
+      },
+      {
+        "command": "devpilot.codeReview",
+        "category": "DevHelper",
+        "title": "%devpilot.codeReview.title%"
+      },
+      {
+        "command": "devpilot.generateCommitMsg",
+        "title": "%devpilot.generateCommit.title%",
+        "icon": "$(devpilot-logo)"
+      },
+      {
+        "command": "devpilot.abortCommitMsg",
+        "title": "%devpilot.abortCommit.title%",
+        "icon": "$(stop-circle)"
+      },
+      {
+        "command": "devpilot.logout",
+        "title": "%devpilot.logout%",
+        "icon": "$(log-out)"
+      },
+      {
+        "command": "devpilot.openPersonal",
+        "title": "%devpilot.personalCenter%",
+        "icon": "$(accounts-view-bar-icon)"
+      },
+      {
+        "command": "devpilot.feedback",
+        "title": "%devpilot.feedback%",
+        "icon": "$(feedback)"
+      },
+      {
+        "command": "devpilot.openSetting",
+        "title": "%devpilot.setting%",
+        "icon": "$(settings-gear)"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "devpilot/content",
+        "label": "DevHelper"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "devpilot/content",
+          "group": "3_devpilot"
+        }
+      ],
+      "devpilot/content": [
+        {
+          "command": "devpilot.openChat",
+          "group": "0"
+        },
+        {
+          "command": "devpilot.referenceCode",
+          "group": "1@1"
+        },
+        {
+          "command": "devpilot.explainCode",
+          "group": "1@2"
+        },
+        {
+          "command": "devpilot.fixCode",
+          "group": "1@3"
+        },
+        {
+          "command": "devpilot.commentCode",
+          "group": "1@4"
+        },
+        {
+          "command": "devpilot.generateTest",
+          "group": "1@5"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "devpilot.feedback",
+          "when": "view === 'devpilot-chat'",
+          "group": "navigation"
+        },
+        {
+          "command": "devpilot.openSetting",
+          "when": "view === 'devpilot-chat'",
+          "group": "navigation"
+        },
+        {
+          "command": "devpilot.openPersonal",
+          "when": "view === 'devpilot-chat'",
+          "group": "inline@1"
+        },
+        {
+          "command": "devpilot.logout",
+          "when": "view === 'devpilot-chat'",
+          "group": "inline@2"
+        }
+      ],
+      "scm/title": [
+        {
+          "command": "devpilot.generateCommitMsg",
+          "group": "navigation@-1001",
+          "when": "scmProvider == git && !devpilot.isGeneratingCommit"
+        },
+        {
+          "command": "devpilot.abortCommitMsg",
+          "group": "navigation@-1001",
+          "when": "scmProvider == git && devpilot.isGeneratingCommit"
+        }
+      ]
+    },
+    "icons": {
+      "devpilot-logo": {
+        "description": "DevHelper extension logo",
+        "default": {
+          "fontPath": "./assets/iconfont/iconfont.woff",
+          "fontCharacter": "\\e600"
+        }
+      },
+      "devpilot-logo-s": {
+        "description": "DevHelper extension logo small",
+        "default": {
+          "fontPath": "./assets/iconfont/iconfont.woff",
+          "fontCharacter": "\\e600"
+        }
+      },
+      "devpilot-logo-offline": {
+        "description": "DevHelper extension logo offline",
+        "default": {
+          "fontPath": "./assets/iconfont/iconfont.woff",
+          "fontCharacter": "\\e600"
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@estruyf/vscode": "^1.1.0",
+    "@types/glob": "^7.2.0",
+    "@types/lodash": "^4.17.7",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@types/react": "^18.0.21",
+    "@types/react-dom": "^18.0.6",
+    "@types/react-syntax-highlighter": "^15.5.11",
+    "@types/uuid": "^8.3.4",
+    "@types/vscode": "^1.75.0",
+    "@types/webpack": "^5.28.1",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "@vscode/test-electron": "^2.1.5",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^6.7.1",
+    "eslint": "^8.20.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "npm-run-all": "^4.1.5",
+    "postcss-loader": "^7.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rimraf": "^3.0.2",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^4.7.4",
+    "wasm-loader": "^1.3.0",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "https-proxy-agent": "^7.0.2",
+    "lodash": "^4.17.21",
+    "react-markdown": "^9.0.1",
+    "react-syntax-highlighter": "^15.5.0",
+    "rehype-raw": "^7.0.0",
+    "simple-git": "^3.23.0",
+    "uuid": "^9.0.1",
+    "web-tree-sitter": "^0.22.6"
+  }
+}
